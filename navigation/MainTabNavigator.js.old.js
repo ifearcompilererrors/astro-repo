@@ -6,18 +6,18 @@ import { TabNavigator, TabBarBottom } from 'react-navigation';
 import Colors from '../constants/Colors';
 
 import HomeScreen from '../screens/HomeScreen';
-import AddNewPersonScreen from '../screens/AddNewPersonScreen';
+import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 export default TabNavigator(
   {
-    Add: {
-      screen: AddNewPersonScreen,
-    },
     Home: {
       screen: HomeScreen,
     },
-    List: {
+    Links: {
+      screen: LinksScreen,
+    },
+    Settings: {
       screen: SettingsScreen,
     },
   },
@@ -27,18 +27,18 @@ export default TabNavigator(
         const { routeName } = navigation.state;
         let iconName;
         switch (routeName) {
-          case 'Add':
+          case 'Home':
             iconName =
               Platform.OS === 'ios'
-                ? `ios-person-add${focused ? '' : '-outline'}`
-                : 'md-person-add';
+                ? `ios-information-circle${focused ? '' : '-outline'}`
+                : 'md-information-circle';
             break;
-          case 'Home':
-            iconName = Platform.OS === 'ios' ? `ios-home${focused ? '' : '-outline'}` : 'md-home';
+          case 'Links':
+            iconName = Platform.OS === 'ios' ? `ios-link${focused ? '' : '-outline'}` : 'md-link';
             break;
-          case 'List':
+          case 'Settings':
             iconName =
-              Platform.OS === 'ios' ? `ios-list${focused ? '' : '-outline'}` : 'md-list';
+              Platform.OS === 'ios' ? `ios-options${focused ? '' : '-outline'}` : 'md-options';
         }
         return (
           <Ionicons
