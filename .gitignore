@@ -11,15 +11,13 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.watchmanconfig
+.babelrc
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
 
 # OSX
 .DS_Store
-
-# Node
-.babelrc
-.watchmanconfig
-
