@@ -10,10 +10,14 @@ import {
   TouchableOpacity,
   Modal,
   TouchableHighlight,
-  Picker } from 'react-native';
+  Picker,
+  AsyncStorage } from 'react-native';
 import { FormInput } from '../components/FormInput';
 import { GeoBytesSearch } from '../components/GeoBytesSearch';
+import { DateTimePicker } from '../components/DateTimePicker'
+import _ from 'underscore'
 
+// TODO: change name to AddNewChartScreen
 export default class AddNewPersonScreen extends Component {
   static navigationOptions = {
     title: 'Add',
@@ -31,15 +35,41 @@ export default class AddNewPersonScreen extends Component {
     };
   }
 
-  setBdayPickerVisible(val) {
-    this.setState({ bdayDatePickerVisible: val });
+  // TODO
+  setLocale = (fqcn) => {
+    // return axios.get(`http://gd.geobytes.com/GetCityDetails?callback=?&fqcn=`+fqcn)
+    //   .then((response) => {
+    //     const data = JSON.parse((response.data).substring(2, response.data.length-2));
+    //     data.geobytestimezone
+    //   });
   }
 
-  setTimePickerVisible(val) {
-    this.setState({ timePickerVisible: val });
+  setCity = (city) => {
+    this.setState({ 
+      city: city,
+    });
+
+    // this.setLocale(city);
   }
 
-  setTime(val) {
+  save = async () => {
+    try {
+      // uuid e.g., 8
+      let UID8_object = {
+        sun: 8,
+        moon: 2,
+        asc: 11,
+      };
+
+      AsyncStorage.setItem('UID8',  JSON.stringify(UID8_object), () => {
+        AsyncStorage.getItem('UID8', (err, result) => {
+          console.log(result);
+        });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
 
   }
 
@@ -48,70 +78,52 @@ export default class AddNewPersonScreen extends Component {
       <ScrollView>
         <FormInput
           style={ styles.textField }
-          onChangeText={(newName) => this.setState({firstName: newName})}
-          value={this.state.firstName}
-          placeholder="First Name"/>
+          onChangeText={ newName => this.setState({firstName: newName}) }
+          value={ this.state.firstName }
+          placeholder="First Name *"/>
+
         <FormInput
           style={ styles.textField }
-          onChangeText={(newName) => this.setState({lastName: newName})}
-          value={this.state.lastName}
+          onChangeText={ newName => this.setState({lastName: newName}) }
+          value={ this.state.lastName }
           placeholder="Last Name"/>
-        
-        <TouchableOpacity
-          style={ styles.picker }
-          onPress={() => {
-            this.setBdayPickerVisible(!this.state.bdayDatePickerVisible);
-          }}>
-          <Text>Birthday</Text>
-        </TouchableOpacity>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.bdayDatePickerVisible}>
-          <DatePickerIOS
-            date={this.state.birthday}
-            mode={'date'}
-            onDateChange={(newBirthday) => this.setState({birthday: newBirthday})} />
-          <TouchableHighlight
-            onPress={() => {
-              this.setBdayPickerVisible(!this.state.bdayDatePickerVisible);
-            }}>
-            <Text>Hide Modal</Text>
-          </TouchableHighlight>
-        </Modal>
 
-        <TouchableOpacity
-          style={ styles.picker }
-          onPress={() => {
-            this.setTimePickerVisible(!this.state.timePickerVisible);
-          }}>
-          <Text>Time of Birth (opt)</Text>
-        </TouchableOpacity>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.timePickerVisible}>
-          <DatePickerIOS
-            date={this.state.birthday}
-            mode={'time'}
-            onDateChange={(newTime) => this.setTime(newTime)} />
-          <TouchableHighlight
-            onPress={() => {
-              this.setTimePickerVisible(!this.state.timePickerVisible);
-            }}>
-            <Text>Hide Modal</Text>
-          </TouchableHighlight>
-        </Modal>
+        <DateTimePicker
+          _onPress={ () => this.setState({ bdayDatePickerVisible: true }) }
+          text="Birthday *"
+          modalVisible={ this.state.bdayDatePickerVisible }
+          date={ this.state.birthday }
+          mode={ 'date' }
+          _onDateChange={ date => this.setState({ birthday: date }) }
+          onButtonPress={ () => this.setState({ bdayDatePickerVisible: false }) } />
 
-        <FormInput
-          style={ styles.textField }
-          onChangeText={(birthCity) => this.setState({city: birthCity})}
-          value={this.state.city}
-          placeholder="City of Birth"/>
+        <DateTimePicker
+          _onPress={ () => this.setState({ timePickerVisible: true }) }
+          text="Time of Birth"
+          modalVisible={ this.state.timePickerVisible}
+          date={ this.state.birthday }
+          mode={ 'time' }
+          _onDateChange={ time => this.setState({ birthday: time }) }
+          onButtonPress={ () => this.setState({ timePickerVisible: false }) } />
 
         <GeoBytesSearch
           style={ styles.textField }
-          placeholder="Search"/>
+          placeholder="Search"
+          value={ this.state.city }
+          _onPress={ this.setCity }/>
+
+        <TouchableOpacity
+          style={ styles.bigButton }
+          onPress={ this.save }>
+          <Text style={ styles.textLarge }>Done</Text>
+        </TouchableOpacity>
+
+        <View>
+          <Text>First Name: { this.state.firstName }</Text>
+          <Text>Last Name: { this.state.lastName }</Text>
+          <Text>Birthday: { (this.state.birthday).toString() }</Text>
+          <Text>City: { this.state.city }</Text>
+        </View>
       </ScrollView>
     );
   }
@@ -132,11 +144,17 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     marginHorizontal: 10,
   },
-  picker: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    margin: 10,
+  bigButton: {
+    backgroundColor: 'lightblue',
+    width: 300,
     height: 40,
-  }
+    borderRadius: 2,
+    alignItems: 'center',
+    marginTop: 15,
+    marginLeft: 35,
+    paddingTop: 5,
+  },
+  textLarge: {
+    fontSize: 23
+  },
 });

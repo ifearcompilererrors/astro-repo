@@ -7,18 +7,18 @@ import Colors from '../constants/Colors';
 
 import HomeScreen from '../screens/HomeScreen';
 import AddNewPersonScreen from '../screens/AddNewPersonScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import ChartsListScreen from '../screens/ChartsListScreen';
 
 export default TabNavigator(
   {
     Add: {
-      screen: AddNewPersonScreen,
+      screen: AddNewPersonScreen, // TODO: change name to AddNewChartScreen
     },
     Home: {
       screen: HomeScreen,
     },
     List: {
-      screen: SettingsScreen,
+      screen: ChartsListScreen,
     },
   },
   {

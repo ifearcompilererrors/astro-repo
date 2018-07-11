@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios'
 
 export class GeoBytesSearch extends Component {
@@ -12,8 +12,6 @@ export class GeoBytesSearch extends Component {
     };
   }
 
-  componentDidMount() {}
-
   handleAutocompleteSearch = (searchTerm) => {
     if (searchTerm.length > 2) {
       return this.getCityDetails(searchTerm);
@@ -23,61 +21,64 @@ export class GeoBytesSearch extends Component {
   getCityDetails = (searchTerm) => {
     return axios.get(`http://gd.geobytes.com/AutoCompleteCity?callback=?&sort=size&q=`+searchTerm)
       .then((response) => {
-        let autocompleteList = JSON.parse((response.data).substring(2, response.data.length-2));
-        console.log(autocompleteList);
-
+        const autocompleteList = JSON.parse((response.data).substring(2, response.data.length-2));
         this.setState({ autocompleteList: autocompleteList });
-
       });
   }
 
-  _keyExtractor = (item, index) => item.geobytescityid;
+  _keyExtractor = (item, index) => index.toString();
+
+  _onPressItem = (city) => {
+    this.props._onPress(city);
+    this.setState({ 
+      autocompleteList: [],
+      value: city
+    });
+  }
+
+  _renderItem = ({item}) => (
+    <ListItem _onPress={ this._onPressItem }
+              fqcn={ item } />
+  );
 
   render() {
-    return <View>
+    return <View style={ styles.container }>
+      <Text style={ styles.label }>Place of Birth *</Text>
       <TextInput
-        {...this.props} 
+        style={ this.props.style }
+        placeholder={ this.props.placeholder }
         returnKeyType="done"
         onChangeText={ this.handleAutocompleteSearch }
-        value={ this.state.value }
+        value={ this.props.value }
       />
       <FlatList
         data={ this.state.autocompleteList }
         keyExtractor={ this._keyExtractor }
-        renderItem={({item, index, separators}) => <ListItem key={ index } fqcn={ item } />}
+        renderItem={ this._renderItem }
       />
       </View>;
   }
 }
 
 class ListItem extends Component {
+  _onPressItem = () => {
+    this.props._onPress(this.props.fqcn);
+  }
+
   render() {
-    return <Text>
-      { this.props.fqcn }
-    </Text>;
+    return <TouchableOpacity onPress={ this._onPressItem }>
+        <Text>
+          { this.props.fqcn }
+        </Text>
+      </TouchableOpacity>;
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 15,
-    backgroundColor: '#fff',
+    marginTop: 10,
   },
-  textField: {
-    height: 40, 
-    borderTopWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 1,
-    borderLeftWidth: 0,
-    borderColor: 'gray',
-    marginHorizontal: 10,
-  },
-  picker: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    margin: 10,
-    height: 40,
+  label: {
+    marginLeft: 10,
   }
 });
