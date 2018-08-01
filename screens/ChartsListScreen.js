@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, AsyncStorage, TouchableOpacity, FlatList } from 'react-native';
-import _ from 'underscore'
+import _ from 'underscore';
 
 export default class ChartsListScreen extends React.Component {
   static navigationOptions = {
@@ -12,7 +12,8 @@ export default class ChartsListScreen extends React.Component {
     this.state = {
       charts: [],
 
-      zodiac: { 1: 'aries',
+      zodiac: { 
+        1: 'aries',
         2: 'taurus',
         3: 'gemini',
         4: 'cancer',
@@ -23,7 +24,7 @@ export default class ChartsListScreen extends React.Component {
         9: 'sagittarius',
         10: 'capricorn',
         11: 'aquarius',
-        12: 'pisces'
+        12: 'pisces',
       }
     }
 
@@ -68,6 +69,7 @@ class ChartListItem extends React.Component {
 
   render() {
     return <View>
+      <Text>{ this.state.chart.firstName } { this.state.chart.lastName }</Text>
       <Text>sun: { this.props.zodiac[(this.state.chart).sun] } moon: { this.props.zodiac[(this.state.chart).moon] } asc: { this.props.zodiac[(this.state.chart).asc] }</Text>
     </View>;
   }
