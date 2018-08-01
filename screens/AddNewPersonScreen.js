@@ -14,8 +14,8 @@ import {
   AsyncStorage } from 'react-native';
 import { FormInput } from '../components/FormInput';
 import { GeoBytesSearch } from '../components/GeoBytesSearch';
-import { DateTimePicker } from '../components/DateTimePicker'
-import _ from 'underscore'
+import { DateTimePicker } from '../components/DateTimePicker';
+import _ from 'underscore';
 
 // TODO: change name to AddNewChartScreen
 export default class AddNewPersonScreen extends Component {
@@ -52,25 +52,47 @@ export default class AddNewPersonScreen extends Component {
     // this.setLocale(city);
   }
 
+  clearState = () => {
+    this.setState({
+      firstName: '',
+      lastName: '',
+      birthday: new Date(),
+      city: '',
+    })
+  }
+
+  calculateChart = (chart_id, chartDetails) => {
+    let chart_object = {
+      id: chart_id,
+      firstName: chartDetails.firstName,
+      lastName: chartDetails.lastName, 
+
+      sun: _.random(1, 12),
+      moon:_.random(1, 12),
+      asc: _.random(1, 12),
+    };
+
+    AsyncStorage.setItem(chart_id,  JSON.stringify(chart_object), () => {
+      AsyncStorage.getItem(chart_id, (err, result) => {
+        console.log(result);
+      });
+    });
+  }
+
   save = async () => {
     try {
-      // uuid e.g., 8
-      let UID8_object = {
-        sun: 8,
-        moon: 2,
-        asc: 11,
-      };
+      const chart_id = this.state.firstName.toUpperCase() + ' ' + this.state.lastName.toUpperCase();
 
-      AsyncStorage.setItem('UID8',  JSON.stringify(UID8_object), () => {
-        AsyncStorage.getItem('UID8', (err, result) => {
-          console.log(result);
-        });
+      // Create chart if duplicate not found
+      AsyncStorage.getItem(chart_id, (err, result) => {
+        if (_.isNull(result)) {
+          this.calculateChart(chart_id, this.state);
+          this.clearState();
+        }
       });
     } catch (error) {
       console.log(error);
     }
-
-
   }
 
   render() {
@@ -78,13 +100,13 @@ export default class AddNewPersonScreen extends Component {
       <ScrollView>
         <FormInput
           style={ styles.textField }
-          onChangeText={ newName => this.setState({firstName: newName}) }
+          onChangeText={ newName => this.setState({firstName: newName.trim()}) }
           value={ this.state.firstName }
           placeholder="First Name *"/>
 
         <FormInput
           style={ styles.textField }
-          onChangeText={ newName => this.setState({lastName: newName}) }
+          onChangeText={ newName => this.setState({lastName: newName.trim()}) }
           value={ this.state.lastName }
           placeholder="Last Name"/>
 
