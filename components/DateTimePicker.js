@@ -32,7 +32,7 @@ class PickerModal extends Component {
                   <TouchableOpacity
                     style={ styles.modalButton }
                     onPress={ this.props.onButtonPress }>
-                    <Text style={ _.extend( styles.textLarge, styles.colorBlue ) }>Done</Text>
+                    <Text style={[ styles.textLarge, styles.colorBlue ]}>Done</Text>
                   </TouchableOpacity>
                 </View>
               </View>
