@@ -11,6 +11,7 @@ import {
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { MonoText } from '../components/StyledText';
+import { Card } from '../components/Card';
 import _ from 'underscore';
 
 export default class HomeScreen extends React.Component {
@@ -45,9 +46,11 @@ export default class HomeScreen extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View>
-            TODO: Stars today card
-          </View>          
+        <Card source={require('../assets/images/placeholder-img.jpeg')}
+              cardIdentifier={ 'Stars today' }
+              title={ 'Mercury in Retrograde' }
+              subtitle={ 'Changes are afoot.' }/>
+
         </ScrollView>
       </View>
     );
@@ -65,18 +68,20 @@ const styles = StyleSheet.create({
   },
   banner__container: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 20,
   },
   createNew__container: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 20,
   },
   createNew__btn: {
     borderStyle: 'solid',
     borderRadius: 2,
     borderWidth: 1,
-    paddingLeft: 5,
-    paddingRight: 5,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
 
   header1: {
