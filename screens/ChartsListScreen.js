@@ -4,7 +4,7 @@ import _ from 'underscore';
 
 export default class ChartsListScreen extends React.Component {
   static navigationOptions = {
-    title: 'List',
+    title: 'Charts',
   };
 
   constructor(props) {
@@ -27,7 +27,9 @@ export default class ChartsListScreen extends React.Component {
         12: 'pisces',
       }
     }
+  }
 
+  componentDidMount = () => {
     this.fetchChartList();
   }
 
