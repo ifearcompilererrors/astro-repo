@@ -11,14 +11,14 @@ import ChartsListScreen from '../screens/ChartsListScreen';
 
 export default TabNavigator(
   {
-    Home: {
+    List: {
+      screen: ChartsListScreen,
+    },
+    Newsfeed: {
       screen: HomeScreen,
     },
     Add: {
       screen: AddNewPersonScreen, // TODO: change name to AddNewChartScreen
-    },
-    List: {
-      screen: ChartsListScreen,
     },
   },
   {
@@ -33,8 +33,8 @@ export default TabNavigator(
                 ? `ios-person-add${focused ? '' : '-outline'}`
                 : 'md-person-add';
             break;
-          case 'Home':
-            iconName = Platform.OS === 'ios' ? `ios-home${focused ? '' : '-outline'}` : 'md-home';
+          case 'Newsfeed':
+            iconName = Platform.OS === 'ios' ? `ios-paper${focused ? '' : '-outline'}` : 'md-paper';
             break;
           case 'List':
             iconName =
