@@ -18,9 +18,10 @@ import { DateTimePicker } from '../components/DateTimePicker';
 import _ from 'underscore';
 
 // TODO: change name to AddNewChartScreen
+// TODO: check if birthtime set
 export default class AddNewPersonScreen extends Component {
   static navigationOptions = {
-    title: 'Add',
+    title: 'Create',
   };
 
   constructor(props) {
@@ -61,11 +62,13 @@ export default class AddNewPersonScreen extends Component {
     })
   }
 
-  calculateChart = (chart_id, chartDetails) => {
+  createChart = (chart_id, chartDetails) => {
     let chart_object = {
       id: chart_id,
       firstName: chartDetails.firstName,
-      lastName: chartDetails.lastName, 
+      lastName: chartDetails.lastName,
+      birthday: chartDetails.birthday,
+      city: chartDetails.city,
 
       sun: _.random(1, 12),
       moon:_.random(1, 12),
@@ -73,6 +76,7 @@ export default class AddNewPersonScreen extends Component {
     };
 
     AsyncStorage.setItem(chart_id,  JSON.stringify(chart_object), () => {
+      // TODO: route to chart profile
       AsyncStorage.getItem(chart_id, (err, result) => {
         console.log(result);
       });
@@ -81,12 +85,12 @@ export default class AddNewPersonScreen extends Component {
 
   save = async () => {
     try {
-      const chart_id = this.state.firstName.toUpperCase() + ' ' + this.state.lastName.toUpperCase();
+      const chart_id = this.state.firstName.toUpperCase() + '_' + this.state.lastName.toUpperCase();
 
       // Create chart if duplicate not found
       AsyncStorage.getItem(chart_id, (err, result) => {
         if (_.isNull(result)) {
-          this.calculateChart(chart_id, this.state);
+          this.createChart(chart_id, this.state);
           this.clearState();
         }
       });
@@ -95,6 +99,7 @@ export default class AddNewPersonScreen extends Component {
     }
   }
 
+  // TODO: chart calculator api
   render() {
     return (
       <ScrollView>
@@ -155,7 +160,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 15,
-    backgroundColor: '#fff',
   },
   textField: {
     height: 40, 
@@ -167,7 +171,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   bigButton: {
-    backgroundColor: 'lightblue',
+    backgroundColor: '#ccc',
     width: 300,
     height: 40,
     borderRadius: 2,
