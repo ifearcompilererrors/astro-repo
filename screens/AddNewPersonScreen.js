@@ -31,6 +31,7 @@ export default class AddNewPersonScreen extends Component {
       lastName: '',
       birthday: new Date(),
       city: '',
+      pinned: false,
       bdayDatePickerVisible: false,
       timePickerVisible: false,
     };
@@ -113,7 +114,7 @@ export default class AddNewPersonScreen extends Component {
           style={ styles.textField }
           onChangeText={ newName => this.setState({lastName: newName.trim()}) }
           value={ this.state.lastName }
-          placeholder="Last Name"/>
+          placeholder={ "Last Name" }/>
 
         <DateTimePicker
           _onPress={ () => this.setState({ bdayDatePickerVisible: true }) }

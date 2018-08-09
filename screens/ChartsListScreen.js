@@ -48,35 +48,56 @@ export default class ChartsListScreen extends React.Component {
       AsyncStorage.getAllKeys((error, keys) => {
         AsyncStorage.multiGet(keys, (error, result) => {
           this.setState({
-            charts: _.reject(result, item => item[0] == 'pinned'),
-            pinnedItems: _.keys(JSON.parse(_.find(result, item => item[0] == 'pinned')[1])),
+            charts: result,
           });
-          console.log(this.state.charts, this.state.pinnedItems)
+
+          console.log('charts', this.state.charts)
         });
       });
     } catch(error) {
+
       console.log(error);
     }
   }
 
+  togglePin = async (id) => {
+    AsyncStorage.getItem(id, (error, result) => {
+      let delta = { pinned: !JSON.parse(result).pinned }
+      AsyncStorage.mergeItem(id, JSON.stringify(delta), () => {
+        this.fetchChartsList();
+      })
+    })
+  }
+
+  removeAllCharts = () => {
+    AsyncStorage.getAllKeys((err, keys) => {
+      AsyncStorage.multiRemove(keys, (err) => {
+        if (err) console.log(err);
+        else { this.setState({ charts: [], pinnedItems: [] })}
+      });
+    })
+  }
+
   _renderItem = ({item}) => (
     <ChartListItem chart={ item[1] }
-                   isPinned={ _.contains(this.state.pinnedItems, item[0]) }
-                   zodiac={ this.state.zodiac }/>
+                   zodiac={ this.state.zodiac }
+                   _onPress={ this.togglePin } />
   );
 
-  // TODO: render PinnedItems after fetch is done
   render() {
     return (
       <View style={ styles.container }>
         <ScrollView>
-            <PinnedItems pinnedItems={ this.state.pinnedItems }
-                         charts={ this.state.charts } />
+          <PinnedItems charts={ this.state.charts } />
 
-            <FlatList
-              data={ this.state.charts }
-              keyExtractor={ (item, index) => index.toString() }
-              renderItem={ this._renderItem } />
+          <FlatList
+            data={ this.state.charts }
+            keyExtractor={ (item, index) => index.toString() }
+            renderItem={ this._renderItem } />
+
+          <TouchableOpacity onPress={ this.removeAllCharts }>
+            <Text>Remove all charts</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -91,14 +112,11 @@ class ChartListItem extends React.Component {
     }
   }
 
-  pinItem = async () => {
-    let delta = {};
-    delta[this.state.chart.id] = '';
-    AsyncStorage.mergeItem('pinned', JSON.stringify(delta), () => {
-      AsyncStorage.getItem('pinned', (err, result) => {
-        console.log(result);        
-      })
-    })
+  shouldComponentUpdate = (nextProps, nextState) => {
+    if (JSON.parse(nextProps.chart).pinned != nextState.chart.pinned) {
+      nextState.chart.pinned = !nextState.chart.pinned;
+    }
+    return true;
   }
 
   render() {
@@ -110,10 +128,11 @@ class ChartListItem extends React.Component {
             <Text>
               sun: { this.props.zodiac[(this.state.chart).sun] } moon: { this.props.zodiac[(this.state.chart).moon] } asc: { this.props.zodiac[(this.state.chart).asc] }
             </Text>
-            <Ionicons style={ styles.pinIcon } 
-                      name={ this.props.isPinned ? 'md-star' : 'md-star-outline' }
-                      size={ 30 }
-                      onPress={() => this.pinItem()} />
+            <TouchableOpacity onPress={() => { this.props._onPress(this.state.chart.id) }}>
+              <Ionicons style={ styles.pinIcon } 
+                      name={ this.state.chart.pinned ? 'md-star' : 'md-star-outline' }
+                      size={ 30 } />
+            </TouchableOpacity>
           </View>
         </View>
       </View>

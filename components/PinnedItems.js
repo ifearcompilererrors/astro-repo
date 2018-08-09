@@ -17,7 +17,7 @@ export class PinnedItems extends Component {
 
   _renderItem = ({item}) => {
     return (
-      <PinnedListItem id={ item } charts={ this.props.charts } />
+      <PinnedListItem chart={ item[1] } />
     );
   }
 
@@ -25,7 +25,7 @@ export class PinnedItems extends Component {
     return (
       <View>
         <FlatList
-          data={ this.props.pinnedItems }
+          data={ _.filter(this.props.charts, chart => JSON.parse(chart[1]).pinned == true) }
           keyExtractor={(item, index) => index.toString()}
           renderItem={ this._renderItem } />
       </View>
@@ -36,28 +36,16 @@ export class PinnedItems extends Component {
 class PinnedListItem extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      name: '',
+      chart: JSON.parse(this.props.chart),
     }
-  }
-
-  componentDidUpdate = () => {
-    AsyncStorage.getItem(this.props.id, (err, result) => {
-      result = JSON.parse(result);
-      if (result) {
-        this.setState({
-          name: result.firstName + ' ' + result.lastName,
-        });
-      }
-    })
   }
 
   render() {
     return(
       <View>
-        <Text>Pinned item:</Text>
-        <Text>{ this.state.name }</Text>
+        <Text>Pinned chart:</Text>
+        <Text>{ this.state.chart.firstName } { this.state.chart.lastName }</Text>
       </View>
     );
   }
