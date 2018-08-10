@@ -8,6 +8,7 @@ export class FormInput extends React.Component {
     return <TextInput
         {...this.props} 
         returnKeyType="done"
+        placeholderTextColor="white"
       />;
   }
 }

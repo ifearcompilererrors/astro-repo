@@ -25,6 +25,9 @@ export default class HomeScreen extends React.Component {
     // TODO: refactor banner
     return (
       <View style={ styles.container }>
+        <Image source={ require('../assets/images/newsfeed-bg2.png') }
+               style={ styles.background } />
+
         <ScrollView style={ styles.container } contentContainerStyle={ styles.content__container }>
 
           <View style={ styles.banner__container }>
@@ -38,7 +41,7 @@ export default class HomeScreen extends React.Component {
         <Card source={require('../assets/images/placeholder-img.jpeg')}
               cardIdentifier={ 'Stars today' }
               title={ 'Mercury in Retrograde' }
-              subtitle={ 'Changes are afoot.' } />
+              subtitle={ 'Challenges and endings galore-- impetus for new energy.' } />
 
         </ScrollView>
       </View>
@@ -48,6 +51,9 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  background: {
+    position: 'absolute',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

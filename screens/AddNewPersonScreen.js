@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import LinearGradient from 'react-native-linear-gradient';
 import { 
   View,
   ScrollView, 
@@ -11,7 +12,9 @@ import {
   Modal,
   TouchableHighlight,
   Picker,
-  AsyncStorage } from 'react-native';
+  AsyncStorage,
+  Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { FormInput } from '../components/FormInput';
 import { GeoBytesSearch } from '../components/GeoBytesSearch';
 import { DateTimePicker } from '../components/DateTimePicker';
@@ -32,8 +35,11 @@ export default class AddNewPersonScreen extends Component {
       birthday: new Date(),
       city: '',
       pinned: false,
+      
       bdayDatePickerVisible: false,
       timePickerVisible: false,
+
+      containerOffset: 0,
     };
   }
 
@@ -54,6 +60,12 @@ export default class AddNewPersonScreen extends Component {
     // this.setLocale(city);
   }
 
+  toggleContainerOffset = () => {
+    this.setState({
+      containerOffset: this.state.containerOffset == 0 ? -30 : 0,
+    });
+  }
+
   clearState = () => {
     this.setState({
       firstName: '',
@@ -64,6 +76,10 @@ export default class AddNewPersonScreen extends Component {
   }
 
   createChart = (chart_id, chartDetails) => {
+    if (_.isEmpty(chartDetails.firstName) && _.isEmpty(chartDetails.lastName)) {
+      return;
+    }
+
     let chart_object = {
       id: chart_id,
       firstName: chartDetails.firstName,
@@ -74,12 +90,16 @@ export default class AddNewPersonScreen extends Component {
       sun: _.random(1, 12),
       moon:_.random(1, 12),
       asc: _.random(1, 12),
+
+      avatar: _.random(0, 5),
     };
 
     AsyncStorage.setItem(chart_id,  JSON.stringify(chart_object), () => {
       // TODO: route to chart profile
       AsyncStorage.getItem(chart_id, (err, result) => {
         console.log(result);
+        this.clearState();
+        this.props.navigation.navigate('List');
       });
     });
   }
@@ -92,7 +112,6 @@ export default class AddNewPersonScreen extends Component {
       AsyncStorage.getItem(chart_id, (err, result) => {
         if (_.isNull(result)) {
           this.createChart(chart_id, this.state);
-          this.clearState();
         }
       });
     } catch (error) {
@@ -101,58 +120,63 @@ export default class AddNewPersonScreen extends Component {
   }
 
   // TODO: chart calculator api
+  // TODO: refactor: changes to fields updates DateTimePicker via this.state.birthday
   render() {
     return (
-      <ScrollView>
-        <FormInput
-          style={ styles.textField }
-          onChangeText={ newName => this.setState({firstName: newName.trim()}) }
-          value={ this.state.firstName }
-          placeholder="First Name *"/>
+      <View style={[ styles.container, { top: this.state.containerOffset }]}>
 
-        <FormInput
-          style={ styles.textField }
-          onChangeText={ newName => this.setState({lastName: newName.trim()}) }
-          value={ this.state.lastName }
-          placeholder={ "Last Name" }/>
+        <Image source={ require('../assets/images/add-bg.png') }
+               style={ styles.background } />
 
-        <DateTimePicker
-          _onPress={ () => this.setState({ bdayDatePickerVisible: true }) }
-          text="Birthday *"
-          modalVisible={ this.state.bdayDatePickerVisible }
-          date={ this.state.birthday }
-          mode={ 'date' }
-          _onDateChange={ date => this.setState({ birthday: date }) }
-          onButtonPress={ () => this.setState({ bdayDatePickerVisible: false }) } />
+        <ScrollView>
+          <FormInput
+            style={ styles.textField }
+            onChangeText={ newName => this.setState({firstName: newName.trim()}) }
+            value={ this.state.firstName }
+            placeholder="First Name"/>
 
-        <DateTimePicker
-          _onPress={ () => this.setState({ timePickerVisible: true }) }
-          text="Time of Birth"
-          modalVisible={ this.state.timePickerVisible}
-          date={ this.state.birthday }
-          mode={ 'time' }
-          _onDateChange={ time => this.setState({ birthday: time }) }
-          onButtonPress={ () => this.setState({ timePickerVisible: false }) } />
+          <FormInput
+            style={[ styles.textField, styles.marginBottom ]}
+            onChangeText={ newName => this.setState({lastName: newName.trim()}) }
+            value={ this.state.lastName }
+            placeholder={ "Last Name" }/>
 
-        <GeoBytesSearch
-          style={ styles.textField }
-          placeholder="Search"
-          value={ this.state.city }
-          _onPress={ this.setCity }/>
+          <DateTimePicker
+            _onPress={ () => this.setState({ bdayDatePickerVisible: true }) }
+            text={ "Birthday" }
+            modalVisible={ this.state.bdayDatePickerVisible }
+            date={ this.state.birthday }
+            mode={ 'date' }
+            ionicon={ 'md-calendar' }
+            _onDateChange={ date => this.setState({ birthday: date }) }
+            onButtonPress={ () => this.setState({ bdayDatePickerVisible: false }) } />
 
-        <TouchableOpacity
-          style={ styles.bigButton }
-          onPress={ this.save }>
-          <Text style={ styles.textLarge }>Done</Text>
-        </TouchableOpacity>
+          <DateTimePicker
+            _onPress={ () => this.setState({ timePickerVisible: true }) }
+            text={ "Time of Birth" }
+            modalVisible={ this.state.timePickerVisible}
+            date={ this.state.birthday }
+            mode={ 'time' }
+            ionicon={ 'md-time' }
+            _onDateChange={ time => this.setState({ birthday: time }) }
+            onButtonPress={ () => this.setState({ timePickerVisible: false }) } />
 
-        <View>
-          <Text>First Name: { this.state.firstName }</Text>
-          <Text>Last Name: { this.state.lastName }</Text>
-          <Text>Birthday: { (this.state.birthday).toString() }</Text>
-          <Text>City: { this.state.city }</Text>
-        </View>
-      </ScrollView>
+          <GeoBytesSearch
+            style={ styles.textField }
+            placeholder={ 'Place of Birth' }
+            value={ this.state.city }
+            _onPress={ this.setCity }
+            _onTextInputPress={ this.toggleContainerOffset }/>
+
+          <TouchableOpacity
+            style={ styles.bigButton }
+            onPress={ this.save }>
+            <Text style={ styles.bigButton__text }>
+              <Ionicons name={ 'md-checkmark-circle-outline' } /> Done!
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -160,28 +184,37 @@ export default class AddNewPersonScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
+  },
+  background: {
+    position: 'absolute',
+    height: '200%',
+  },
+  marginBottom:  {
+    marginBottom: 30,
   },
   textField: {
-    height: 40, 
+    height: 50,
+    fontSize: 18,
     borderTopWidth: 0,
     borderRightWidth: 0,
     borderBottomWidth: 1,
     borderLeftWidth: 0,
-    borderColor: 'gray',
-    marginHorizontal: 10,
+    borderColor: 'white',
+    marginHorizontal: 40,
+    marginTop: 20,
   },
   bigButton: {
-    backgroundColor: '#ccc',
-    width: 300,
-    height: 40,
-    borderRadius: 2,
     alignItems: 'center',
-    marginTop: 15,
-    marginLeft: 35,
-    paddingTop: 5,
+    // backgroundColor: '#DDDDDD',
+    backgroundColor: 'white',
+    padding: 12,
+    height: 40,
+    width: 270,
+    borderRadius: 15,
+    marginHorizontal: 50,
+    marginTop: 50,
   },
-  textLarge: {
-    fontSize: 23
+  bigButton__text: {
+    fontSize: 15,
   },
 });

@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
-  StyleSheet } from 'react-native';
+  StyleSheet,
+  Image } from 'react-native';
 import { PinnedItems } from '../components/PinnedItems';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'underscore';
@@ -35,7 +36,9 @@ export default class ChartsListScreen extends React.Component {
         10: 'capricorn',
         11: 'aquarius',
         12: 'pisces',
-      }
+      },
+
+      refreshing: false,
     }
   }
 
@@ -49,9 +52,10 @@ export default class ChartsListScreen extends React.Component {
         AsyncStorage.multiGet(keys, (error, result) => {
           this.setState({
             charts: result,
+            refreshing: false,
           });
 
-          console.log('charts', this.state.charts)
+          console.log(this.state.charts)
         });
       });
     } catch(error) {
@@ -67,6 +71,13 @@ export default class ChartsListScreen extends React.Component {
         this.fetchChartsList();
       })
     })
+  }
+
+  handleRefresh = () => {
+    this.setState({
+      refreshing: true,
+    })
+    this.fetchChartsList();
   }
 
   removeAllCharts = () => {
@@ -87,18 +98,23 @@ export default class ChartsListScreen extends React.Component {
   render() {
     return (
       <View style={ styles.container }>
-        <ScrollView>
-          <PinnedItems charts={ this.state.charts } />
+        <Image source={ require('../assets/images/chartlist-bg.png') }
+               style={ styles.background } />
 
-          <FlatList
-            data={ this.state.charts }
-            keyExtractor={ (item, index) => index.toString() }
-            renderItem={ this._renderItem } />
+        <PinnedItems charts={ this.state.charts }
+                     zodiac={ this.state.zodiac } />
+
+        <FlatList
+          data={ this.state.charts }
+          keyExtractor={ (item, index) => item.toString() }
+          renderItem={ this._renderItem }
+          onRefresh={ this.handleRefresh }
+          refreshing={ this.state.refreshing }/>
 
           <TouchableOpacity onPress={ this.removeAllCharts }>
-            <Text>Remove all charts</Text>
+            <Ionicons name={ 'md-trash' } size={25} style={{marginLeft: 10}} />
           </TouchableOpacity>
-        </ScrollView>
+
       </View>
     );
   }
@@ -123,15 +139,24 @@ class ChartListItem extends React.Component {
     return (
       <View style={ styles.chartListItem__container }>
         <View style={ styles.chartListItem__border }>
-          <Text style={ styles.name }>{ this.state.chart.firstName } { this.state.chart.lastName }</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text>
+              <Ionicons style={ styles.avatar }
+                        name={ ['logo-android', 'logo-octocat', 'logo-twitch', 'logo-reddit', 'logo-snapchat', 'logo-tux'][this.state.chart.avatar] }
+                        size={ 40 } />
+            </Text>
+            <Text style={ styles.name }>
+              { this.state.chart.firstName } { this.state.chart.lastName }
+            </Text>
+          </View>
           <View style={ styles.content } >
             <Text>
-              sun: { this.props.zodiac[(this.state.chart).sun] } moon: { this.props.zodiac[(this.state.chart).moon] } asc: { this.props.zodiac[(this.state.chart).asc] }
+              <Ionicons name={'md-sunny'}/> { this.props.zodiac[(this.state.chart).sun] } <Ionicons name={'md-moon'}/> { this.props.zodiac[(this.state.chart).moon] } <Ionicons name={'md-arrow-up'}/> { this.props.zodiac[(this.state.chart).asc] }
             </Text>
             <TouchableOpacity onPress={() => { this.props._onPress(this.state.chart.id) }}>
               <Ionicons style={ styles.pinIcon } 
-                      name={ this.state.chart.pinned ? 'md-star' : 'md-star-outline' }
-                      size={ 30 } />
+                        name={ this.state.chart.pinned ? 'md-star' : 'md-star-outline' }
+                        size={ 30 } />
             </TouchableOpacity>
           </View>
         </View>
@@ -141,6 +166,12 @@ class ChartListItem extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  background: {
+    position: 'absolute',
+  },
   chartListItem__container: {
     paddingTop: 10,
     paddingBottom: 10,
@@ -152,14 +183,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'grey',
   },
+  chartList__title: {
+    marginLeft: 10,
+    marginTop: 10,
+  },
   name: {
-    fontSize: 20
+    fontSize: 20,
+    marginLeft: 10,
+    marginTop: 7,
   },
   content: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   pinIcon: {
+    color: 'grey',
+  },
+  avatar: {
     color: 'grey',
   }
 });

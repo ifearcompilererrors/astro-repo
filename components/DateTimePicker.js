@@ -1,17 +1,29 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, DatePickerIOS } from 'react-native';
+import moment from 'moment';
+import { View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  DatePickerIOS } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import _ from 'underscore'
 
 export class DateTimePicker extends Component {
   render() {
-    return <View>
+    return <View styles={ styles.container }>
             <TouchableOpacity
-              style={ styles.picker }
+              style={ styles.pickerButton }
               onPress={ this.props._onPress }>
-              <Text>{ this.props.text }</Text>
+              <Text><Ionicons name={ this.props.ionicon } /> { this.props.text }</Text>
             </TouchableOpacity>
+
+            <Text style={ styles.dateString }>
+              { this.props.mode == 'date' ? moment(this.props.date).format("MMMM Mo, YYYY").toString() : moment(this.props.date).format("h:mm A").toString()}
+            </Text>
+
             <PickerModal { ...this.props }/>
           </View>;
   }
@@ -41,12 +53,26 @@ class PickerModal extends Component {
 }
 
 const styles = StyleSheet.create({
-  picker: {
+  container: {
+    flex: 1,
     alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    justifyContent: 'center',
+  },
+  pickerButton: {
+    alignItems: 'center',
+    // backgroundColor: '#DDDDDD',
+    backgroundColor: 'white',
     padding: 12,
-    margin: 10,
     height: 40,
+    width: 270,
+    borderRadius: 15,
+    marginHorizontal: 50,
+    marginTop: 20,
+  },
+  dateString: {
+    textAlign: 'center',
+    marginTop: 15,
+
   },
   modalContainer: {
     height: 200,

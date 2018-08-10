@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 25,
     width: 340,
-    height: 450,
+    height: 460,
     overflow: 'hidden',
     backgroundColor: 'white',
   },

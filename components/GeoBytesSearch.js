@@ -43,13 +43,15 @@ export class GeoBytesSearch extends Component {
 
   render() {
     return <View style={ styles.container }>
-      <Text style={ styles.label }>Place of Birth *</Text>
       <TextInput
         style={ this.props.style }
         placeholder={ this.props.placeholder }
+        placeholderTextColor="white"
         returnKeyType="done"
         onChangeText={ this.handleAutocompleteSearch }
         value={ this.props.value }
+        onFocus={ this.props._onTextInputPress }
+        onBlur={ this.props._onTextInputPress }
       />
       <FlatList
         data={ this.state.autocompleteList }
@@ -66,8 +68,9 @@ class ListItem extends Component {
   }
 
   render() {
-    return <TouchableOpacity onPress={ this._onPressItem }>
-        <Text>
+    return <TouchableOpacity onPress={ this._onPressItem }
+                             style={ styles.listItem__container }>
+        <Text style={ styles.listItem }>
           { this.props.fqcn }
         </Text>
       </TouchableOpacity>;
@@ -75,10 +78,11 @@ class ListItem extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
+  listItem__container: {
+    marginHorizontal: 50,
+    backgroundColor: 'white',
   },
-  label: {
-    marginLeft: 10,
+  listItem: {
+    padding: 10,
   }
 });
