@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FormInput } from '../components/FormInput';
 import { GeoBytesSearch } from '../components/GeoBytesSearch';
 import { DateTimePicker } from '../components/DateTimePicker';
+import calculateBirthChart from '../api/calculateBirthChart';
 import _ from 'underscore';
 
 // TODO: change name to AddNewChartScreen
@@ -101,6 +102,13 @@ export default class AddNewPersonScreen extends Component {
         this.props.navigation.navigate('List');
       });
     });
+
+    console.log(moment(chart_object.birthday).get('year'))
+    console.log(moment(chart_object.birthday).get('month'))
+    console.log(moment(chart_object.birthday).get('day'))
+    console.log(moment(chart_object.birthday).get('hour'))
+    console.log(moment(chart_object.birthday).get('minute'))
+    console.log(calculateBirthChart(chart_object))
   }
 
   save = async () => {

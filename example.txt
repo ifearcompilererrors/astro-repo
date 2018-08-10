@@ -1,0 +1,33 @@
+curl --data 'name=sdfg&month=2&day=5&year=2004&hour=&minute=&unknown_time=on&place=Chicago%2C+Illinois%2C+United+States&geo_timezone_id=America%2FChicago&zp_lat_decimal=41.85003&zp_long_decimal=-87.65005&zp-report-variation=birthreport&zp_offset_geo=-6&action=zp_birthreport' https://astrolibrary.org/wp-admin/admin-ajax.php --header "Content-Type:application/x-www-form-urlencoded; charset=UTF-8"
+
+
+name: 'sdfg'
+month: '2',
+day: '5',
+year: '2004',
+hour: '',
+minute: '',
+unknown_time: 'on',
+place: 'Chicago, Illinois, United States',
+geo_timezone_id: 'America/Chicago',
+zp_lat_decimal: '41.85003',
+zp_long_decimal: '-87.65005',
+'zp-report-variation': 'birthreport',
+zp_offset_geo: '-6',
+action: 'zp_birthreport'
+
+
+name: 'sdfg'
+month: 2
+day: 5
+year: 2004
+hour: 
+minute: 
+unknown_time: 'on'
+place: 'Chicago, Illinois, United States'
+geo_timezone_id: 'America/Chicago'
+zp_lat_decimal: 41.85003
+zp_long_decimal: -87.65005
+zp-report-variation: 'birthreport'
+zp_offset_geo: -6
+action: 'zp_birthreport'
