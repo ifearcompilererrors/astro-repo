@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import LinearGradient from 'react-native-linear-gradient';
 import { 
   View,
   ScrollView, 
@@ -62,7 +61,7 @@ export default class AddNewPersonScreen extends Component {
 
   toggleContainerOffset = () => {
     this.setState({
-      containerOffset: this.state.containerOffset == 0 ? -30 : 0,
+      containerOffset: this.state.containerOffset == 0 ? -100 : 0,
     });
   }
 
@@ -130,7 +129,7 @@ export default class AddNewPersonScreen extends Component {
 
         <ScrollView>
           <FormInput
-            style={ styles.textField }
+            style={[ styles.textField, styles.marginTop ]}
             onChangeText={ newName => this.setState({firstName: newName.trim()}) }
             value={ this.state.firstName }
             placeholder="First Name"/>
@@ -184,17 +183,22 @@ export default class AddNewPersonScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
   },
   background: {
     position: 'absolute',
     height: '200%',
   },
+  marginTop: {
+    marginTop: 50,
+  },
   marginBottom:  {
-    marginBottom: 30,
+    marginBottom: 20,
   },
   textField: {
     height: 50,
     fontSize: 18,
+    color: 'white',
     borderTopWidth: 0,
     borderRightWidth: 0,
     borderBottomWidth: 1,
@@ -205,7 +209,6 @@ const styles = StyleSheet.create({
   },
   bigButton: {
     alignItems: 'center',
-    // backgroundColor: '#DDDDDD',
     backgroundColor: 'white',
     padding: 12,
     height: 40,
@@ -215,6 +218,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   bigButton__text: {
-    fontSize: 15,
+    fontSize: 15
   },
 });

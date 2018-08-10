@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   },
   pickerButton: {
     alignItems: 'center',
-    // backgroundColor: '#DDDDDD',
     backgroundColor: 'white',
     padding: 12,
     height: 40,
@@ -72,7 +71,8 @@ const styles = StyleSheet.create({
   dateString: {
     textAlign: 'center',
     marginTop: 15,
-
+    color: 'white',
+    fontSize: 18,
   },
   modalContainer: {
     height: 200,
