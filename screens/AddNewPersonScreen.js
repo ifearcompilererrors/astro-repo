@@ -43,21 +43,10 @@ export default class AddNewPersonScreen extends Component {
     };
   }
 
-  // TODO
-  setLocale = (fqcn) => {
-    // return axios.get(`http://gd.geobytes.com/GetCityDetails?callback=?&fqcn=`+fqcn)
-    //   .then((response) => {
-    //     const data = JSON.parse((response.data).substring(2, response.data.length-2));
-    //     data.geobytestimezone
-    //   });
-  }
-
   setCity = (city) => {
     this.setState({ 
       city: city,
     });
-
-    // this.setLocale(city);
   }
 
   toggleContainerOffset = () => {
@@ -80,6 +69,8 @@ export default class AddNewPersonScreen extends Component {
       return;
     }
 
+    console.log(chartDetails.city);
+
     let chart_object = {
       id: chart_id,
       firstName: chartDetails.firstName,
@@ -90,9 +81,21 @@ export default class AddNewPersonScreen extends Component {
       sun: _.random(1, 12),
       moon:_.random(1, 12),
       asc: _.random(1, 12),
-
       avatar: _.random(0, 5),
+
+      year: moment(chartDetails.birthday).get('year'),
+      month: moment(chartDetails.birthday).get('month'),
+      day: moment(chartDetails.birthday).get('day'),
+      hour: moment(chartDetails.birthday).get('hour'),
+      minute: moment(chartDetails.birthday).get('minute'),
     };
+
+    let calculatedChart;
+    calculateBirthChart(chart_object).then((result) => {
+      console.log('!!calculatedChart', result);
+      chart_object.sun = result.sun;
+      chart_object.moon
+    });
 
     AsyncStorage.setItem(chart_id,  JSON.stringify(chart_object), () => {
       // TODO: route to chart profile
@@ -103,12 +106,6 @@ export default class AddNewPersonScreen extends Component {
       });
     });
 
-    console.log(moment(chart_object.birthday).get('year'))
-    console.log(moment(chart_object.birthday).get('month'))
-    console.log(moment(chart_object.birthday).get('day'))
-    console.log(moment(chart_object.birthday).get('hour'))
-    console.log(moment(chart_object.birthday).get('minute'))
-    console.log(calculateBirthChart(chart_object))
   }
 
   save = async () => {

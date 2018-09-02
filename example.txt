@@ -31,3 +31,26 @@ zp_long_decimal: -87.65005
 zp-report-variation: 'birthreport'
 zp_offset_geo: -6
 action: 'zp_birthreport'
+
+"Chicago, IL, United States"
+"Chicago%2C+Illinois%2C+United+States&
+"Chicago, Illinois, United States&
+
+name=jayz&
+month=10&
+day=4&
+year=1994&
+hour=12&
+minute=31&
+place=Chicago%2C+Illinois%2C+United+States&
+geo_timezone_id=America%2FChicago&
+zp_lat_decimal=41.85003&
+zp_long_decimal=-87.65005&
+zp-report-variation=birthreport&
+zp_offset_geo=-6&
+action=zp_birthreport
+
+https://astrolibrary.org/wp-admin/admin-ajax.php?action=zp_atlas_get_cities&c=san%20francisco
+action=zp_atlas_get_cities&c=san%20francisco
+
+[{"value":"San Francisco, Nueva Esparta, Venezuela","lat":"11.20944","long":"-64.29167","tz":"America\/Caracas"}...]
